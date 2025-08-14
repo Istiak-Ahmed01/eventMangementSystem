@@ -2,13 +2,13 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define Max-Queue 50
-#define Max-Spots 5
-#define Max-Name 20
+#define Max_Queue 50
+#define Max_Spots 5
+#define Max_Name 20
 
 typedef struct Event {
     int id;
-    char name[Max-Name];
+    char name[Max_Name];
     char date[11];
     char spot[10];
     struct Event* next;
@@ -16,7 +16,7 @@ typedef struct Event {
 
 Event* events = NULL;
 
-int queue[Max-Queue];
+int queue[Max_Queue];
 int q_front = 0, q_rear = -1, q_size = 0;
 
 typedef struct Student {
@@ -26,13 +26,13 @@ typedef struct Student {
 
 Student* students = NULL;
 
-int map[Max-Spots][Max-Spots];
+int map[Max_Spots][Max_Spots];
 
 void add(int id, char* name, char* date, char* spot) {
     Event* new_event = (Event*)malloc(sizeof(Event));
     new_event->id = id;
-    strncpy(new_event->name, name, Max-Name - 1);
-    new_event->name[Max-Name - 1] = '\0';
+    strncpy(new_event->name, name, Max_Name - 1);
+    new_event->name[Max_Name - 1] = '\0';
     strncpy(new_event->date, date, 10);
     new_event->date[10] = '\0';
     strncpy(new_event->spot, spot, 9);
@@ -61,7 +61,7 @@ void free_events() {
 }
 
 void signup(int id) {
-    if (q_size < Max-Queue) {
+    if (q_size < Max_Queue) {
         queue[++q_rear] = id;
         q_size++;
         printf("Student %d signed up\n", id);
@@ -129,20 +129,20 @@ void free_students(Student* node) {
 }
 
 void setup_map() {
-    int paths[Max-Spots][Max-Spots] = {
+    int paths[Max_Spots][Max_Spots] = {
         {0, 1, 1, 0, 0},
         {1, 0, 1, 1, 0},
         {1, 1, 0, 1, 1},
         {0, 1, 1, 0, 1},
         {0, 0, 1, 1, 0}
     };
-    for (int i = 0; i < Max-Spots; i++)
-        for (int j = 0; j < Max-Spots; j++)
+    for (int i = 0; i < Max_Spots; i++)
+        for (int j = 0; j < Max_Spots; j++)
             map[i][j] = paths[i][j];
 }
 
 void find_path(int start, int end) {
-    int visited[Max-Spots] = {0}, parent[Max-Spots], q[Max-Spots];
+    int visited[Max_Spots] = {0}, parent[Max_Spots], q[Max_Spots];
     int front = 0, rear = -1;
     q[++rear] = start;
     visited[start] = 1;
@@ -150,7 +150,7 @@ void find_path(int start, int end) {
     while (front <= rear) {
         int curr = q[front++];
         if (curr == end) break;
-        for (int i = 0; i < Max-Spots; i++)
+        for (int i = 0; i < Max_Spots; i++)
             if (map[curr][i] && !visited[i]) {
                 q[++rear] = i;
                 visited[i] = 1;
@@ -162,7 +162,7 @@ void find_path(int start, int end) {
         return;
     }
     printf("Path: ");
-    int path[Max-Spots], len = 0, curr = end;
+    int path[Max_Spots], len = 0, curr = end;
     while (curr != -1) {
         path[len++] = curr;
         curr = parent[curr];
@@ -172,18 +172,31 @@ void find_path(int start, int end) {
         printf("%s%s", spots[path[i]], i > 0 ? " -> " : "\n");
 }
 
+void show_logo() {
+    printf("  _____       _         \n");
+    printf(" |  __ \\     (_)        \n");
+    printf(" | |__) |__ _ _ _ __    \n");
+    printf(" |  _  // _` | | '_ \\   \n");
+    printf(" | | \\ \\ (_| | | | | |  \n");
+    printf(" |_|  \\_\\__,_|_|_| |_|  \n");
+    printf("      EventHub - Event Management    \n\n");
+}
+
 int main() {
+    show_logo();
     setup_map();
     int choice, id, start, end;
-    char name[Max-Name], date[11], spot[10];
+    char name[Max_Name], date[11], spot[10];
     while (1) {
-        printf("\n=== Campus App ===\n1. Add Event\n2. Show Events\n3. Sign Up\n4. Show Queue\n5. Process Sign-Up\n6. Add Student\n7. Find Student\n8. Find Path\n9. Exit\nChoose: ");
+        printf("\n=== EventHub ===\n1. Add Event\n2. Show Events\n3. Sign Up\n4. Show Queue\n5. Process Sign-Up\n6. Add Student\n7. Find Student\n8. Find Path\n9. Exit\nChoose: ");
         scanf("%d", &choice);
+        while (getchar() != '\n'); // Clear input buffer
         if (choice == 9) break;
         switch (choice) {
             case 1:
                 printf("Enter ID, Name, Date (YYYY-MM-DD), Spot: ");
                 scanf("%d %s %s %s", &id, name, date, spot);
+                while (getchar() != '\n'); // Clear input buffer
                 add(id, name, date, spot);
                 break;
             case 2:
@@ -192,6 +205,7 @@ int main() {
             case 3:
                 printf("Enter Student ID: ");
                 scanf("%d", &id);
+                while (getchar() != '\n'); // Clear input buffer
                 signup(id);
                 break;
             case 4:
@@ -203,16 +217,19 @@ int main() {
             case 6:
                 printf("Enter Student ID: ");
                 scanf("%d", &id);
+                while (getchar() != '\n'); // Clear input buffer
                 add_student(id);
                 break;
             case 7:
                 printf("Enter Student ID: ");
                 scanf("%d", &id);
+                while (getchar() != '\n'); // Clear input buffer
                 printf(find_student(id) ? "Student found!\n" : "Student not found\n");
                 break;
             case 8:
                 printf("Enter start & end (0=Library, 1=Cafe, 2=Hall, 3=Lab, 4=Dorm): ");
                 scanf("%d %d", &start, &end);
+                while (getchar() != '\n'); // Clear input buffer
                 find_path(start, end);
                 break;
             default:
