@@ -29,6 +29,10 @@ Student* students = NULL;
 int map[Max_Spots][Max_Spots];
 
 void add(int id, char* name, char* date, char* spot) {
+    if (strcmp(date, "2025-08-15") < 0) {
+        printf("Cannot add past event!\n");
+        return;
+    }
     Event* new_event = (Event*)malloc(sizeof(Event));
     new_event->id = id;
     strncpy(new_event->name, name, Max_Name - 1);
@@ -39,7 +43,7 @@ void add(int id, char* name, char* date, char* spot) {
     new_event->spot[9] = '\0';
     new_event->next = events;
     events = new_event;
-    printf("Added event: %s\n", name);
+    printf("Event added successfully!\n");
 }
 
 void show_events() {
@@ -193,9 +197,18 @@ int main() {
         if (choice == 9) break;
         switch (choice) {
             case 1:
-                printf("Enter ID, Name, Date (YYYY-MM-DD), Spot: ");
-                scanf("%d %s %s %s", &id, name, date, spot);
-                while (getchar() != '\n'); // Clear input buffer
+                printf("Enter ID: ");
+                scanf("%d", &id);
+                while (getchar() != '\n');
+                printf("Enter Name: ");
+                fgets(name, Max_Name, stdin);
+                name[strcspn(name, "\n")] = '\0';
+                printf("Enter Date (YYYY-MM-DD): ");
+                fgets(date, 11, stdin);
+                date[strcspn(date, "\n")] = '\0';
+                printf("Enter Spot: ");
+                fgets(spot, 10, stdin);
+                spot[strcspn(spot, "\n")] = '\0';
                 add(id, name, date, spot);
                 break;
             case 2:
@@ -226,9 +239,12 @@ int main() {
                 printf(find_student(id) ? "Student found!\n" : "Student not found\n");
                 break;
             case 8:
-                printf("Enter start & end (0=Library, 1=Cafe, 2=Hall, 3=Lab, 4=Dorm): ");
-                scanf("%d %d", &start, &end);
-                while (getchar() != '\n'); // Clear input buffer
+                printf("Enter start (0=Library, 1=Cafe, 2=Hall, 3=Lab, 4=Dorm): ");
+                scanf("%d", &start);
+                while (getchar() != '\n');
+                printf("Enter end (0=Library, 1=Cafe, 2=Hall, 3=Lab, 4=Dorm): ");
+                scanf("%d", &end);
+                while (getchar() != '\n');
                 find_path(start, end);
                 break;
             default:
